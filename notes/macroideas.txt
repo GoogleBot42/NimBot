@@ -1,0 +1,32 @@
+changes
+    commands
+        change output to be more helpful
+        show which are regular cmds and how to use them
+        show which are special cmds (custum regex)
+        show aliases
+    allowOps/allowEveryone
+        allow ops
+        allow all/everyone
+
+
+help txt
+    Synopsys:
+    
+    Usage:
+    
+    Example
+    
+    Aliases:
+
+
+ircCommand help:
+    regex: ""
+    alias:
+        ".help"
+    help:
+        echo "hello world"
+    routine = proc (match, msg, user, channel: string): Future[string] {.async.} =
+        echo "testing
+    requireOP: false
+    enabledByDefault: true
+    opOnlyByDefault: false
