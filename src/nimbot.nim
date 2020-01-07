@@ -163,6 +163,7 @@ proc doCompletion(input: string; seed, length: int): Future[string] {.async.} =
   }
   let response = await completionHttpClient.request(completionApi, HttpPost, $body)
   result = await response.body
+  completionHttpClient.close()
   result = result.replace(re"\s+", " ").strip
   result = "..." & result & "..."
 
@@ -196,6 +197,7 @@ defineIrcCommand(match, msg, user, channel, "play", re"^\.play http[s]?://(?:[a-
   for key, node in parseJson(await response.body):
     if key == "Added":
       succeeded = true
+  tswfHttpClient.close()
   if succeeded:
     result = "Added to queue"
   else:
@@ -209,6 +211,7 @@ defineIrcCommand(match, msg, user, channel, "current", re"^\.current$", "Returns
     if key == "Current":
       succeeded = true
       result = "Current song: " & node.str
+  tswfHttpClient.close()
   if not succeeded:
     result = "Failed to add to queue"
 
@@ -219,6 +222,7 @@ defineIrcCommand(match, msg, user, channel, "skip", re"^\.skip$", "Votes to skip
   for key, node in parseJson(await response.body):
     if key == "Skip":
       succeeded = true
+  tswfHttpClient.close()
   if succeeded:
     result = "Voted"
   else:
@@ -230,11 +234,10 @@ defineIrcCommand(match, msg, user, channel, "queue", re"^\.queue$", "Outputs the
   let response = await tswfHttpClient.request(tswfApi & "/queue", HttpGet)
   var succeeded = false
   var urls = newSeq[string]()
-  let str = await response.body
-  echo str
-  for item in parseJson(str):
+  for item in parseJson(await response.body):
     succeeded = true
     urls.add(item.str)
+  tswfHttpClient.close()
   let totalQueueLength = urls.len
   while urls.len > maxOutputLength:
     urls.delete(0)
@@ -262,6 +265,7 @@ defineIrcCommand(match, msg, user, channel, "listeners", re"^\.listeners$", "Ret
     let node = parseJson(await response.body)
     let count = node.num
     largestCount = max(largestCount, (int)count);
+    tswfHttpClient.close()
     await sleepAsync(200)
   if largestCount == 0:
     result = "No clients listening."
@@ -271,10 +275,10 @@ defineIrcCommand(match, msg, user, channel, "listeners", re"^\.listeners$", "Ret
     result = $largestCount & " clients listening."
 
 defineIrcCommand(match, msg, user, channel, "image", re"\bhttps?:\/\/(?:[a-z0-9\-]+\.)+[a-z]{2,6}(?:\/[^\/#?]+)+\.(?:jpg|jpeg|gif|png)\b", "Uses YOLO to detect objects in images", hiddenCmd = true):
-  let completionHttpClient = newAsyncHttpClient()
-  completionHttpClient.headers = newHttpHeaders({ "Content-Type": "application/json" })
+  let yoloHttpClient = newAsyncHttpClient()
+  yoloHttpClient.headers = newHttpHeaders({ "Content-Type": "application/json" })
   let body = %*{ "url": msg }
-  let response = await completionHttpClient.request(objectDetectionApi, HttpPost, $body)
+  let response = await yoloHttpClient.request(objectDetectionApi, HttpPost, $body)
 
   var data = initTable[string,int]()
   for key, node in parseJson(await response.body):
@@ -283,6 +287,7 @@ defineIrcCommand(match, msg, user, channel, "image", re"\bhttps?:\/\/(?:[a-z0-9\
       if confidence.getFloat() > 0.5:
         inc count
     data[key] = count
+  yoloHttpClient.close()
   if data.len > 0:
     result = "Found objects: "
     var i = 0
