@@ -219,7 +219,7 @@ defineIrcCommand(match, msg, user, channel, "current", re"^\.current$", "Returns
       title = node.str
     elif key == "duration":
       succeeded = true
-      title = node.str
+      duration = node.str
   tswfHttpClient.close()
   if succeeded:
     if title != "":
@@ -227,7 +227,7 @@ defineIrcCommand(match, msg, user, channel, "current", re"^\.current$", "Returns
     if duration != "":
       result &= "[" & duration & "] "
     if url != "":
-      result &= url & ","
+      result &= url
   else:
     result = "Failed to get current song"
 
