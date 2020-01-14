@@ -207,13 +207,29 @@ defineIrcCommand(match, msg, user, channel, "current", re"^\.current$", "Returns
   let tswfHttpClient = newAsyncHttpClient()
   let response = await tswfHttpClient.request(tswfApi & "/current", HttpGet)
   var succeeded = false
+  var duration = ""
+  var title = ""
+  var url = ""
   for key, node in parseJson(await response.body):
-    if key == "Current":
+    if key == "url":
       succeeded = true
-      result = "Current song: " & node.str
+      url = node.str
+    elif key == "title":
+      succeeded = true
+      title = node.str
+    elif key == "duration":
+      succeeded = true
+      title = node.str
   tswfHttpClient.close()
-  if not succeeded:
-    result = "Failed to add to queue"
+  if succeeded:
+    if title != "":
+      result &= "\"" & title & "\" "
+    if duration != "":
+      result &= "[" & duration & "] "
+    if url != "":
+      result &= url & ","
+  else:
+    result = "Failed to get current song"
 
 defineIrcCommand(match, msg, user, channel, "skip", re"^\.skip$", "Votes to skip the current song being played by TSWF.", hiddenCmd = false):
   let tswfHttpClient = newAsyncHttpClient()
