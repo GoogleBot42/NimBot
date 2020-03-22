@@ -149,7 +149,7 @@ defineIrcCommand(match, msg, user, channel, "desu", re"^desu$", "takes the last 
   result = history[0] & ", desu"
 
 const faces = @["(・`ω´・)", ";;w;;", "owo", "UwU", ">w<", "^w^"]
-defineIrcCommand(match, msg, user, channel, "owo", re"(?i)\bowo|uwu|\^w\^\b(?-i)", "OwOifies text", hiddenCmd = false):
+defineIrcCommand(match, msg, user, channel, "owo", re"(?i)\b(owo|uwu|\^w\^)\b(?-i)", "OwOifies text", hiddenCmd = false):
   # taken from here: https://honk.moe/tools/owo.html
   result = if msg.replace(match, "").strip == "": history[0] else: msg
   result = result.replace(re"(?:r|l)", "w");
@@ -181,8 +181,8 @@ defineIrcCommand(match, msg, user, channel, "complete", "Uses gpt-2 to complete 
   lastCompletionString = input
   lastCompletionSeed = seed
   result = await doCompletion(input, seed, 50)
-defineAlias("complete", re"^\bnc\b")
-defineAlias("complete", re"^\b\.nc\b")
+defineAlias("complete", re"^nc\b")
+defineAlias("complete", re"^\.nc\b")
 
 defineIrcCommand(match, msg, user, channel, "completeContinue", "Continues the previous \"" & botname & " complete\""):
   var length = 150
@@ -193,8 +193,8 @@ defineIrcCommand(match, msg, user, channel, "completeContinue", "Continues the p
       return "Only OPs can change the length of the output"
   length = min(length, 500) # a practical limit
   result = await doCompletion(lastCompletionString, lastCompletionSeed, length)
-defineAlias("completeContinue", re"^\bncc\b")
-defineAlias("completeContinue", re"^\b\.ncc\b")
+defineAlias("completeContinue", re"^ncc\b")
+defineAlias("completeContinue", re"^\.ncc\b")
 
 const
   emojiSimpleAlphabet = {
@@ -298,13 +298,13 @@ proc emojify(input: string; extendedAlphabet: bool): string =
       result &= symb
 defineIrcCommand(match, msg, user, channel, "extraEmoji", "Turns text into it's emoji counterpart. Now with even more emoji! 🤪 'abc' -> '🅰️ 🇧 ☪️'"):
   result = emojify(getCmdParam(match, msg), true)
-defineAlias("extraEmoji", re"(?i)^\.extraEmoji(?-i)")
-defineAlias("extraEmoji", re"(?i)^\.eEmoji(?-i)")
-defineAlias("extraEmoji", re"^\.ee")
+defineAlias("extraEmoji", re"(?i)^\.extraEmoji\b(?-i)")
+defineAlias("extraEmoji", re"(?i)^\.eEmoji\b(?-i)")
+defineAlias("extraEmoji", re"^\.ee\b")
 defineIrcCommand(match, msg, user, channel, "emoji", "Turns text into it's emoji counterpart 'abc' -> '🇦 🇧 🇨'"):
   result = emojify(getCmdParam(match, msg), false)
-defineAlias("emoji", re"(?i)^\.emoji(?-i)")
-defineAlias("emoji", re"^\.e")
+defineAlias("emoji", re"(?i)^\.emoji\b(?-i)")
+defineAlias("emoji", re"^\.e\b")
 
 
 defineIrcCommand(match, msg, user, channel, "play", re"^\.play http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+", "Adds a song to TSWF's queue", hiddenCmd = false):
