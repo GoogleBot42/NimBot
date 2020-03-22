@@ -10,6 +10,8 @@ import strutils
 import random
 import httpclient
 import json
+import hashes
+from unicode import utf8
 from times import getTime, toUnix
 
 type
@@ -77,6 +79,12 @@ proc isOP(nick, channel: string): bool =
       let permission = user[0]
       return permission == '@' or permission == '%'
   return false
+
+proc getCmdParam(match, msg: string): string =
+  if msg.replace(match, "").strip == "":
+    return history[0]
+  else:
+    return msg.replace(match, "").strip
 
 proc getCmdRestrictions(cmdName, channel: string): IrcCommandRestrictions =
   if not cmdRestrictions.hasKey(channel):
@@ -187,6 +195,117 @@ defineIrcCommand(match, msg, user, channel, "completeContinue", "Continues the p
   result = await doCompletion(lastCompletionString, lastCompletionSeed, length)
 defineAlias("completeContinue", re"^\bncc\b")
 defineAlias("completeContinue", re"^\b\.ncc\b")
+
+const
+  emojiSimpleAlphabet = {
+    "A": @["🇦"],
+    "B": @["🇧"],
+    "C": @["🇨"],
+    "D": @["🇩"],
+    "E": @["🇪"],
+    "F": @["🇫"],
+    "G": @["🇬"],
+    "H": @["🇭"],
+    "I": @["🇮"],
+    "J": @["🇯"],
+    "K": @["🇰"],
+    "L": @["🇱"],
+    "M": @["🇲"],
+    "N": @["🇳"],
+    "O": @["🇴"],
+    "P": @["🇵"],
+    "Q": @["🇶"],
+    "R": @["🇷"],
+    "S": @["🇸"],
+    "T": @["🇹"],
+    "U": @["🇺"],
+    "V": @["🇻"],
+    "W": @["🇼"],
+    "X": @["🇽"],
+    "Y": @["🇾"],
+    "Z": @["🇿"],
+    "!": @["❗️"],
+    "?": @["❓"],
+    "#": @["#️⃣"],
+    "*": @["*️⃣"],
+    "+": @["➕"],
+    "0": @["0️⃣"],
+    "1": @["1️⃣"],
+    "2": @["2️⃣"],
+    "3": @["3️⃣"],
+    "4": @["4️⃣"],
+    "5": @["5️⃣"],
+    "6": @["6️⃣"],
+    "7": @["7️⃣"],
+    "8": @["8️⃣"],
+    "9": @["9️⃣"],
+  }.toTable
+  emojiExtendedAlphabet = {
+    "A": @["🇦","🅰️"],
+    "B": @["🇧"],
+    "C": @["🇨","©️","☪️"],
+    "D": @["🇩","↩️"],
+    "E": @["🇪","📧"],
+    "F": @["🇫"],
+    "G": @["🇬","⛽️"],
+    "H": @["🇭","♓️"],
+    "I": @["🇮","ℹ️"],
+    "J": @["🇯","☔"],
+    "K": @["🇰"],
+    "L": @["🇱","🕒"],
+    "M": @["🇲","Ⓜ️","♏️","♍️","〽"],
+    "N": @["🇳","📈"],
+    "O": @["🇴","🅾️","⭕️"],
+    "P": @["🇵","🅿️"],
+    "Q": @["🇶"],
+    "R": @["🇷","®️"],
+    "S": @["🇸", "💰","⚡️"],
+    "T": @["🇹","✝️"],
+    "U": @["🇺","⛎"],
+    "V": @["🇻","♈️"],
+    "W": @["🇼","〰️"],
+    "X": @["🇽","❎","❌","✖️"],
+    "Y": @["🇾","🌱"],
+    "Z": @["🇿","💤"],
+    "!": @["❗️","❕"],
+    "?": @["❓","❔"],
+    "#": @["#️⃣"],
+    "*": @["*️⃣"],
+    "+": @["➕"],
+    "0": @["0️⃣"],
+    "1": @["1️⃣"],
+    "2": @["2️⃣"],
+    "3": @["3️⃣"],
+    "4": @["4️⃣"],
+    "5": @["5️⃣"],
+    "6": @["6️⃣"],
+    "7": @["7️⃣"],
+    "8": @["8️⃣"],
+    "9": @["9️⃣"],
+  }.toTable
+proc emojify(input: string; extendedAlphabet: bool): string =
+  let alphabet = if extendedAlphabet: emojiExtendedAlphabet else: emojiSimpleAlphabet
+  let seed = hash(input)
+  var idx = 0
+  for s in input.utf8:
+    let symb = s.toUpper
+    if symb in alphabet:
+      let emojiList = alphabet[symb]
+      result &= emojiList[(idx + seed) mod emojiList.len]
+      result &= ' ' # keep emojis from combining
+      inc idx
+    else:
+      result &= symb
+defineIrcCommand(match, msg, user, channel, "extraEmoji", "Turns text into it's emoji counterpart. Now with even more emoji! 🤪 'abc' -> '🅰️ 🇧 ☪️'"):
+  result = emojify(getCmdParam(match, msg), true)
+defineAlias("extraEmoji", re"(?i)^\.extraEmoji(?-i)")
+defineAlias("extraEmoji", re"(?i)^\.eEmoji(?-i)")
+defineAlias("extraEmoji", re"^\.ee")
+defineIrcCommand(match, msg, user, channel, "emoji", "Turns text into it's emoji counterpart 'abc' -> '🇦 🇧 🇨'"):
+  result = emojify(getCmdParam(match, msg), false)
+defineAlias("emoji", re"(?i)^\.emoji(?-i)")
+defineAlias("emoji", re"^\.e")
+
 
 defineIrcCommand(match, msg, user, channel, "play", re"^\.play http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+", "Adds a song to TSWF's queue", hiddenCmd = false):
   let tswfHttpClient = newAsyncHttpClient()
