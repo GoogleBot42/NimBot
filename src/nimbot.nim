@@ -31,7 +31,7 @@ const
   ircServerAddress = "irc.rizon.net"
   ircServerPort = 6667
   botChannel = "#NimBot"
-  ircChannels = @[botChannel, "#botbus", "#dfsajbrwinb", "#dailyprog"]
+  ircChannels = @[botChannel, "#dailyprog"]
   ircPassword = ""
   historySize = 256 # must be a power of two
   completionApi = "http://localhost:8888"
