@@ -142,9 +142,6 @@ defineIrcCommand(match, msg, user, channel, "commands", "Lists all the available
       result &= "\n"
     result &= cmd.name
 
-defineIrcCommand(match, msg, user, channel, "echo", "echos the message that was submitted"):
-  result = msg
-
 defineIrcCommand(match, msg, user, channel, "desu", re"^desu$", "takes the last statement and appends desu at the end", hiddenCmd = false):
   result = history[0] & ", desu"
 
