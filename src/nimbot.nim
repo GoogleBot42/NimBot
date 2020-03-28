@@ -141,7 +141,7 @@ defineIrcCommand(match, msg, user, channel, "commands", "Lists all the available
     if cmd.hidden:
       continue
     if i > 0:
-      result &= "\n"
+      result &= " | "
     result &= cmd.name
 
 defineIrcCommand(match, msg, user, channel, "desu", re"^desu$", "takes the last statement and appends desu at the end", hiddenCmd = false):
