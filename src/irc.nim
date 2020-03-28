@@ -147,14 +147,14 @@ proc send*(irc: AsyncIrc, message: string,
   result = newFuture[void]("irc.send")
   result.complete()
 
-proc privmsg*(irc: Irc, target, message: string) =
+proc privmsg*(irc: Irc, target, message: string, sendImmediately: bool=false) =
   ## Sends ``message`` to ``target``. ``Target`` can be a channel, or a user.
-  irc.send("PRIVMSG $1 :$2" % [target, message])
+  irc.send("PRIVMSG $1 :$2" % [target, message], sendImmediately)
 
-proc privmsg*(irc: AsyncIrc, target, message: string): Future[void] =
+proc privmsg*(irc: AsyncIrc, target, message: string, sendImmediately: bool=false): Future[void] =
   ## Sends ``message`` to ``target`` asynchronously. ``Target`` can be a
   ## channel, or a user.
-  result = irc.send("PRIVMSG $1 :$2" % [target, message])
+  result = irc.send("PRIVMSG $1 :$2" % [target, message], sendImmediately)
 
 proc notice*(irc: Irc, target, message: string) =
   ## Sends ``notice`` to ``target``. ``Target`` can be a channel, or a user.

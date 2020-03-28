@@ -14,6 +14,8 @@ import hashes
 from unicode import utf8
 from times import getTime, toUnix
 
+proc sendEntireMessage(client: AsyncIrc; nick, msg: string, sendImmediately: bool=false) {.async.}
+
 type
   IrcFunc* = proc(match, msg, nick, channel: string): Future[string]
   IrcCommand* = ref object of RootObj
@@ -542,7 +544,7 @@ proc addToHistory(msg: string) =
     history.popLast()
   history.addFirst(msg)
 
-proc sendEntireMessage(client: AsyncIrc; nick, msg: string) {.async.} =
+proc sendEntireMessage(client: AsyncIrc; nick, msg: string, sendImmediately: bool=false) {.async.} =
   if msg == "":
     return
   var workingStr = ""
@@ -551,13 +553,13 @@ proc sendEntireMessage(client: AsyncIrc; nick, msg: string) {.async.} =
       workingStr &= word & ' '
     else:
       workingStr = workingStr.strip
-      await client.privmsg(nick, workingStr)
+      await client.privmsg(nick, workingStr, sendImmediately)
       addToHistory(workingStr)
       await sleepAsync(msgSleep)
       workingStr = word
   if workingStr != "":
     workingStr = workingStr.strip
-    await client.privmsg(nick, workingStr)
+    await client.privmsg(nick, workingStr, sendImmediately)
     addToHistory(workingStr)
 
 proc ircCallback(client: AsyncIrc, ev: IrcEvent) {.async.} =
