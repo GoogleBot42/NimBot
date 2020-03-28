@@ -155,8 +155,7 @@ defineIrcCommand(match, msg, user, channel, "owo", re"(?i)\b(owo|uwu|\^w\^)\b(?-
   result = result.replace(re"N([aeiou])", "Ny$1");
   result = result.replace(re"N([AEIOU])", "Ny$1");
   result = result.replace(re"ove", "uv");
-  let face = faces[r.rand(faces.len-1)]
-  result = result.replace(re"\!+", " " & face & " ");
+  result = result.replace(re"\!+", " " & r.sample(faces) & " ");
 
 proc doCompletion(input: string; seed, length: int): Future[string] {.async.} =
   let completionHttpClient = newAsyncHttpClient()
