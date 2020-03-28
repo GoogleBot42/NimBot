@@ -302,10 +302,11 @@ defineIrcCommand(match, msg, user, channel, "emoji", "Turns text into it's emoji
 defineAlias("emoji", re"(?i)^\.emoji\b(?-i)")
 defineAlias("emoji", re"^\.e\b")
 
-const words = staticRead("/usr/share/dict/words").split
+const words = staticRead("/usr/share/dict/words")
+var wordList = words.split
 defineIrcCommand(match, msg, user, channel, "godSays", "Outputs words from 'God' using RNG"):
   for i in countup(1, 10):
-    result &= sample(words) & ' '
+    result &= sample(wordList) & ' '
 defineAlias("godSays", re"^\.g\b")
 defineAlias("godSays", re"^\.gw\b")
 defineAlias("godSays", re"^\.gs\b")
