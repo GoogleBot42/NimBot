@@ -303,6 +303,15 @@ defineIrcCommand(match, msg, user, channel, "emoji", "Turns text into it's emoji
 defineAlias("emoji", re"(?i)^\.emoji\b(?-i)")
 defineAlias("emoji", re"^\.e\b")
 
+const words = staticRead("/usr/share/dict/words").split
+defineIrcCommand(match, msg, user, channel, "godSays", "Outputs words from 'God' using RNG"):
+  for i in countup(1, 10):
+    result &= sample(words) & ' '
+defineAlias("godSays", re"^\.g\b")
+defineAlias("godSays", re"^\.gw\b")
+defineAlias("godSays", re"^\.gs\b")
+defineAlias("godSays", re"^\.god\b")
+defineAlias("godSays", re"(?i)^\.godSays\b(?-i)")
 
 defineIrcCommand(match, msg, user, channel, "play", re"^\.play http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+", "Adds a song to TSWF's queue", hiddenCmd = false):
   let tswfHttpClient = newAsyncHttpClient()
