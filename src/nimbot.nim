@@ -38,6 +38,7 @@ const
   historySize = 256 # must be a power of two
   completionApi = "http://localhost:8888"
   objectDetectionApi = "http://localhost:8889"
+  flatEarthMemesApi = "https://globie-info.neet.cloud/"
   tswfApi = "https://stream.neet.space/api"
   maxMsgLen = 400 # max length of a single irc message
   msgSleep = 400 # time to sleep between sending multiple messages
@@ -308,7 +309,7 @@ const words = staticRead("/usr/share/dict/words")
 var wordList = words.split
 defineIrcCommand(match, msg, user, channel, "godSays", "Outputs words from 'God' using RNG"):
   for i in countup(1, 10):
-    result &= sample(wordList) & ' '
+    result &= r.sample(wordList) & ' '
 defineAlias("godSays", re"^\.g\b")
 defineAlias("godSays", re"^\.gw\b")
 defineAlias("godSays", re"^\.gs\b")
@@ -325,6 +326,19 @@ defineIrcCommand(match, msg, user, channel, "kys", re"(?i)\b(kys|soy)\b(?-i)", "
   await client.sendEntireMessage(channel, "(metaphorically speaking)")
   await sleepAsync(msgSleep*3)
   await client.send("NICK " & nick)
+
+defineIrcCommand(match, msg, user, channel, "globie", "Redpills the globie with memez. xDDDDDD"):
+  let flatEarthApiClient = newAsyncHttpClient()
+  let response = await flatEarthApiClient.request(flatEarthMemesApi, HttpGet)
+  var media = newSeq[string]()
+  for node in parseJson(await response.body):
+    media.add(node["name"].getStr)
+  if (media.len > 0):
+    result &= "ok globie... if you think you're really ready for this "
+    result &= r.sample(media)
+  else:
+    result &= "NASA has blocked your request"
+defineAlias("globie", re"^\.globie\b")
 
 defineIrcCommand(match, msg, user, channel, "play", re"^\.play http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+", "Adds a song to TSWF's queue", hiddenCmd = false):
   let tswfHttpClient = newAsyncHttpClient()
