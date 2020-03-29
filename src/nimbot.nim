@@ -335,7 +335,7 @@ defineIrcCommand(match, msg, user, channel, "globie", "Redpills the globie with 
     media.add(node["name"].getStr)
   if (media.len > 0):
     result &= "ok globie... if you think you're really ready for this "
-    result &= r.sample(media)
+    result &= flatEarthMemesApi & r.sample(media)
   else:
     result &= "NASA has blocked your request"
 defineAlias("globie", re"^\.globie\b")
