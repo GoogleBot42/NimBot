@@ -328,12 +328,13 @@ defineIrcCommand(match, msg, user, channel, "kys", re"(?i)\b(kys|soy)\b(?-i)", "
   await client.send("NICK " & nick)
 
 defineIrcCommand(match, msg, user, channel, "globie", "Redpills the globie with memez. xDDDDDD"):
+  result &= user & ": "
   let flatEarthApiClient = newAsyncHttpClient()
   let response = await flatEarthApiClient.request(flatEarthMemesApi, HttpGet)
   var media = newSeq[string]()
   for node in parseJson(await response.body):
     media.add(node["name"].getStr)
-  if (media.len > 0):
+  if media.len > 0 and r.next mod 3 == 0:
     result &= "ok globie... if you think you're really ready for this "
     result &= flatEarthMemesApi & r.sample(media)
   else:
