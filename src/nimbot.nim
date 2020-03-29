@@ -334,7 +334,7 @@ defineIrcCommand(match, msg, user, channel, "globie", "Redpills the globie with 
   var media = newSeq[string]()
   for node in parseJson(await response.body):
     media.add(node["name"].getStr)
-  if media.len > 0 and r.next mod 3 == 0:
+  if media.len > 0 and r.next mod 2 == 0:
     result &= "ok globie... if you think you're really ready for this "
     result &= flatEarthMemesApi & r.sample(media)
   else:
