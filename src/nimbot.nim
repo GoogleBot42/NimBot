@@ -315,6 +315,17 @@ defineAlias("godSays", re"^\.gs\b")
 defineAlias("godSays", re"^\.god\b")
 defineAlias("godSays", re"(?i)^\.godSays\b(?-i)")
 
+defineIrcCommand(match, msg, user, channel, "kys", re"(?i)\b(kys|soy)\b(?-i)", "Tells the person to kill themself", hiddenCmd = false):
+  await client.sendEntireMessage(channel, "\x01ACTION A wild DanPena appears...\x01")
+  await sleepAsync(msgSleep*3)
+  let nick = client.getNick
+  await client.send("NICK DanPena")
+  await sleepAsync(msgSleep)
+  await client.sendEntireMessage(channel, "Kill yourself!")
+  await client.sendEntireMessage(channel, "(metaphorically speaking)")
+  await sleepAsync(msgSleep*3)
+  await client.send("NICK " & nick)
+
 defineIrcCommand(match, msg, user, channel, "play", re"^\.play http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+", "Adds a song to TSWF's queue", hiddenCmd = false):
   let tswfHttpClient = newAsyncHttpClient()
   var url = match
