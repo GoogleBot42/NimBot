@@ -335,6 +335,9 @@ defineIrcCommand(match, msg, user, channel, "kys", re"(?i)\b(kys|soy)\b(?-i)", "
   await sleepAsync(msgSleep*3)
   await client.send("NICK " & nick)
 
+defineIrcCommand(match, msg, user, channel, "lol", re"(?i)\b(lol|kek|lmao|lmfao|rofl)\b(?-i)", "LOL 🤪🔫", hiddenCmd = false):
+  result = match.toUpperAscii & " 🤪🔫"
+
 defineIrcCommand(match, msg, user, channel, "globie", "Redpills the globie with memez. xDDDDDD"):
   result &= user & ": "
   let flatEarthApiClient = newAsyncHttpClient()
