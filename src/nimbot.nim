@@ -317,6 +317,8 @@ defineAlias("godSays", re"^\.god\b")
 defineAlias("godSays", re"(?i)^\.godSays\b(?-i)")
 
 defineIrcCommand(match, msg, user, channel, "hansen", re"(?i)\b(loli|shota|catbo(i|y)s?|catg(ri|ir)ls?)\b(?-i)", "To Catch A Predator with Chris Hansen", hiddenCmd = false):
+  await client.sendEntireMessage(channel, "\x01ACTION ChrisHansen enters the room\x01")
+  await sleepAsync(msgSleep*3)
   let nick = client.getNick
   await client.send("NICK ChrisHansen")
   await sleepAsync(msgSleep)
