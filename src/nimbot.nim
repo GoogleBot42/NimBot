@@ -316,7 +316,7 @@ defineAlias("godSays", re"^\.gs\b")
 defineAlias("godSays", re"^\.god\b")
 defineAlias("godSays", re"(?i)^\.godSays\b(?-i)")
 
-defineIrcCommand(match, msg, user, channel, "hansen", re"(?i)\b(loli|shota|catboy|catgirl)\b(?-i)", "To Catch A Predator with Chris Hansen", hiddenCmd = false):
+defineIrcCommand(match, msg, user, channel, "hansen", re"(?i)\b(loli|shota|catbo(i|y)s?|catg(ri|ir)ls?)\b(?-i)", "To Catch A Predator with Chris Hansen", hiddenCmd = false):
   let nick = client.getNick
   await client.send("NICK ChrisHansen")
   await sleepAsync(msgSleep)
@@ -335,7 +335,7 @@ defineIrcCommand(match, msg, user, channel, "kys", re"(?i)\b(kys|soy)\b(?-i)", "
   await sleepAsync(msgSleep*3)
   await client.send("NICK " & nick)
 
-defineIrcCommand(match, msg, user, channel, "lol", re"(?i)\b(lol|kek|lmao|lmfao|rofl)\b(?-i)", "LOL 🤪🔫", hiddenCmd = false):
+defineIrcCommand(match, msg, user, channel, "lol", re"(?i)\b(lol|kek|lmao|lmfao|rofl|ha(ha)?)\b(?-i)", "LOL 🤪🔫", hiddenCmd = false):
   result = match.toUpperAscii & " 🤪🔫"
 
 defineIrcCommand(match, msg, user, channel, "globie", "Redpills the globie with memez. xDDDDDD"):
