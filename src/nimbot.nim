@@ -316,6 +316,14 @@ defineAlias("godSays", re"^\.gs\b")
 defineAlias("godSays", re"^\.god\b")
 defineAlias("godSays", re"(?i)^\.godSays\b(?-i)")
 
+defineIrcCommand(match, msg, user, channel, "hansen", re"(?i)\b(loli|shota|catboy|catgirl)\b(?-i)", "To Catch A Predator with Chris Hansen", hiddenCmd = false):
+  let nick = client.getNick
+  await client.send("NICK ChrisHansen")
+  await sleepAsync(msgSleep)
+  await client.sendEntireMessage(channel, "Why don't you have a seat right over here?")
+  await sleepAsync(msgSleep*3)
+  await client.send("NICK " & nick)
+
 defineIrcCommand(match, msg, user, channel, "kys", re"(?i)\b(kys|soy)\b(?-i)", "Tells the person to kill themself", hiddenCmd = false):
   await client.sendEntireMessage(channel, "\x01ACTION A wild DanPena appears...\x01")
   await sleepAsync(msgSleep*3)
