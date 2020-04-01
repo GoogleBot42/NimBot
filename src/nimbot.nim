@@ -320,7 +320,7 @@ defineIrcCommand(match, msg, user, channel, "hansen", re"(?i)\b(loli|shota|catbo
   let nick = client.getNick
   await client.send("NICK ChrisHansen")
   await sleepAsync(msgSleep)
-  await client.sendEntireMessage(channel, "Why don't you have a seat right over here?")
+  await client.sendEntireMessage(channel, user & ": Why don't you have a seat right over here?")
   await sleepAsync(msgSleep*3)
   await client.send("NICK " & nick)
 
