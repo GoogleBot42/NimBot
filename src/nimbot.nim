@@ -337,7 +337,7 @@ defineIrcCommand(match, msg, user, channel, "kys", re"(?i)\b(kys|soy)\b(?-i)", "
   await sleepAsync(msgSleep*3)
   await client.send("NICK " & nick)
 
-defineIrcCommand(match, msg, user, channel, "lol", re"(?i)\b(lol|kek|lmao|lmfao|rofl|ha(ha)?)\b(?-i)", "LOL 🤪🔫", hiddenCmd = false):
+defineIrcCommand(match, msg, user, channel, "lol", re"(?i)\b(l(o|u)ls?|kek|lmf?ao|rofl|(ha)+|xD|:D|giggles?|laughs?)\b(?-i)", "LOL 🤪🔫", hiddenCmd = false):
   result = match.toUpperAscii & " 🤪🔫"
 
 defineIrcCommand(match, msg, user, channel, "globie", "Redpills the globie with memez. xDDDDDD"):
